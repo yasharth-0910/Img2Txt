@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { createWorker, CreateWorkerOptions } from 'tesseract.js'
+import { createWorker, type Worker, type WorkerOptions } from 'tesseract.js'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
@@ -24,12 +24,12 @@ export default function Home() {
     setProgress(0)
     try {
       const worker = await createWorker({
-        logger: (m: LoggerMessage) => {
+        logger: (m) => {
           if (m.status === 'recognizing text') {
             setProgress(Math.round(m.progress * 100))
           }
         }
-      } as CreateWorkerOptions)
+      })      
       
       const imageUrl = URL.createObjectURL(file)
       await (worker as any).loadLanguage('eng')
