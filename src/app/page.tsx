@@ -2,17 +2,12 @@
 
 import { useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { createWorker, type Worker, type WorkerOptions } from 'tesseract.js'
+import { createWorker } from 'tesseract.js'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Copy, Upload, RefreshCcw, Github } from "lucide-react"
 import Link from 'next/link'
-
-interface LoggerMessage {
-  status: string;
-  progress: number;
-}
 
 export default function Home() {
   const [extractedText, setExtractedText] = useState<string>('')
