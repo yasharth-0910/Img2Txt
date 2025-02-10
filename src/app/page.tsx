@@ -37,6 +37,23 @@ interface AIAnalysis {
   };
 }
 
+interface Languages {
+  [key: string]: string;
+}
+
+const languages: Languages = {
+  eng: 'English',
+  fra: 'French',
+  spa: 'Spanish',
+  deu: 'German',
+  ita: 'Italian',
+  por: 'Portuguese',
+  hin: 'Hindi',
+  jpn: 'Japanese',
+  kor: 'Korean',
+  chi_sim: 'Chinese Simplified'
+}
+
 export default function Home() {
   const [extractedText, setExtractedText] = useState<string>('')
   const [isProcessing, setIsProcessing] = useState(false)
@@ -46,19 +63,6 @@ export default function Home() {
   const [savedTexts, setSavedTexts] = useState<SavedText[]>([])
   const [aiAnalysis, setAiAnalysis] = useState<AIAnalysis>({})
   const [isAnalyzing, setIsAnalyzing] = useState(false)
-
-  const languages = {
-    eng: 'English',
-    fra: 'French',
-    spa: 'Spanish',
-    deu: 'German',
-    ita: 'Italian',
-    por: 'Portuguese',
-    hin: 'Hindi',
-    jpn: 'Japanese',
-    kor: 'Korean',
-    chi_sim: 'Chinese Simplified'
-  }
 
   // Load saved texts from localStorage on mount
   useEffect(() => {
