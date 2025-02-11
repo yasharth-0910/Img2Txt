@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import pdf from 'pdf-parse'
+
+// Dynamic import to avoid build-time issues
+const getPdfParse = async () => {
+  const pdfParse = await import('pdf-parse')
+  return pdfParse.default
+}
 
 export async function POST(req: Request) {
   try {
@@ -18,7 +23,8 @@ export async function POST(req: Request) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer())
-    const data = await pdf(buffer)
+    const pdfParse = await getPdfParse()
+    const data = await pdfParse(buffer)
     
     return NextResponse.json({ 
       text: data.text,
