@@ -4,18 +4,20 @@ import { useSession } from "next-auth/react"
 import { signIn } from "next-auth/react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 
 export default function SignIn() {
   const { data: session } = useSession()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get('callbackUrl') || '/'
 
   useEffect(() => {
     if (session) {
-      router.push('/')
+      router.push(callbackUrl)
     }
-  }, [session, router])
+  }, [session, router, callbackUrl])
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -29,7 +31,7 @@ export default function SignIn() {
         <CardContent>
           <Button 
             className="w-full"
-            onClick={() => signIn('google', { callbackUrl: '/' })}
+            onClick={() => signIn('google', { callbackUrl })}
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
               <path

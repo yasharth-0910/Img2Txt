@@ -28,16 +28,16 @@ export const authOptions: NextAuthOptions = {
       return session
     },
     redirect: async ({ url, baseUrl }) => {
-      // Allows relative callback URLs
+      // Allow relative URLs
       if (url.startsWith("/")) return `${baseUrl}${url}`
-      // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url
+      // Allow redirects to the same origin
+      if (new URL(url).origin === baseUrl) return url
+      // Default to homepage
       return baseUrl
     }
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60 // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET
 } 
