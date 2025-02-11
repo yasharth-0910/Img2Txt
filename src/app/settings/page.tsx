@@ -12,9 +12,9 @@ export default function SettingsPage() {
   const { data: session } = useSession()
   const { plan: currentPlan } = useSubscription()
 
-  const handleSubscribe = async (planId: string) => {
+  const SubscribeButton = ({ planId }: { planId: string }) => {
     const plan = plans[planId as keyof typeof plans]
-    if (!plan) return
+    if (!plan) return null
 
     return (
       <Dialog>
@@ -79,9 +79,9 @@ export default function SettingsPage() {
                 </div>
               </div>
               <div className="bg-muted p-4 rounded-lg">
-                <h4 className="font-medium mb-2">Current Plan: {currentPlan.name}</h4>
+                <h4 className="font-medium mb-2">Current Plan: {currentPlan?.name}</h4>
                 <ul className="text-sm space-y-2">
-                  {currentPlan.features.map((feature, i) => (
+                  {currentPlan?.features?.map((feature, i) => (
                     <li key={i} className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-primary" />
                       {feature}
@@ -110,7 +110,7 @@ export default function SettingsPage() {
                 
                 <CardContent>
                   <div className="text-3xl font-bold mb-6">
-                    ${plan.price}
+                    ₹{plan.price}
                     <span className="text-sm font-normal text-muted-foreground">
                       /month
                     </span>
@@ -127,7 +127,7 @@ export default function SettingsPage() {
                 </CardContent>
                 
                 <CardFooter>
-                  {handleSubscribe(id)}
+                  <SubscribeButton planId={id} />
                 </CardFooter>
               </Card>
             ))}
