@@ -6,7 +6,7 @@ import { createWorker } from 'tesseract.js'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { Upload, RefreshCcw, Github, Volume2, Languages, Search, Tags, Download } from "lucide-react"
+import { Upload, RefreshCcw, Github, Volume2, Languages, Search, Tags, Download, History, Copy, Wand2 } from "lucide-react"
 import Link from 'next/link'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from 'sonner'
@@ -209,7 +209,7 @@ export default function Home() {
     }
   }
 
-  const processFile = async (file: File) => {
+  const processFile = useCallback(async (file: File) => {
     const fileType = file.type.toLowerCase()
     
     if (fileType.includes('image')) {
@@ -221,7 +221,7 @@ export default function Home() {
     } else {
       toast.error('Unsupported file type')
     }
-  }
+  }, [processImage, processTextFile, processDocxFile])
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return

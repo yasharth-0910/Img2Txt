@@ -4,11 +4,8 @@ import { useSession } from "next-auth/react"
 import { plans } from "@/config/subscriptions"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Check, CreditCard } from "lucide-react"
-import { useState } from "react"
-import { toast } from "sonner"
+import { Check } from "lucide-react"
 import { useSubscription } from "@/hooks/useSubscription"
-import { UPIPayment } from "@/components/upi-payment"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 declare global {
@@ -20,7 +17,6 @@ declare global {
 export default function SettingsPage() {
   const { data: session } = useSession()
   const { plan: currentPlan } = useSubscription()
-  const [loading, setLoading] = useState(false)
 
   const handleSubscribe = async (planId: string) => {
     const plan = plans[planId as keyof typeof plans]

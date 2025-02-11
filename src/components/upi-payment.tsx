@@ -4,9 +4,7 @@ import { useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { Button } from './ui/button'
 import { toast } from 'sonner'
-import { Copy, Smartphone, AlertCircle } from 'lucide-react'
-import { Input } from './ui/input'
-import { Label } from './ui/label'
+import { Smartphone } from 'lucide-react'
 
 interface UPIPaymentProps {
   amount: number
