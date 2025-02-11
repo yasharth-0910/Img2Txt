@@ -8,12 +8,6 @@ import { Check } from "lucide-react"
 import { useSubscription } from "@/hooks/useSubscription"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
-}
-
 export default function SettingsPage() {
   const { data: session } = useSession()
   const { plan: currentPlan } = useSubscription()
