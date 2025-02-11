@@ -2,9 +2,10 @@ import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
-import { AuthOptions } from "next-auth"
+import type { NextAuthOptions } from "next-auth"
 
-export const authOptions: AuthOptions = {
+// Move auth options to a separate config object
+const config: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -34,9 +35,6 @@ export const authOptions: AuthOptions = {
       // Allows callback URLs on the same origin
       else if (new URL(url).origin === baseUrl) return url
       return baseUrl
-    },
-    signIn: async ({ user }) => {
-      // ... rest of the code
     }
   },
   session: {
@@ -46,6 +44,9 @@ export const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET
 }
 
-const handler = NextAuth(authOptions)
+// Create and export the route handlers
+const handler = NextAuth(config)
+export { handler as GET, handler as POST }
 
-export { handler as GET, handler as POST } 
+// Export config for use in other files
+export const authOptions = config 

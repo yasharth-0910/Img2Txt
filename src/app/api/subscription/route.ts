@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { authOptions } from "../auth/[...nextauth]/route"
 
 export async function GET() {
   try {
