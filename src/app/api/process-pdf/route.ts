@@ -1,17 +1,23 @@
 import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import pdf from 'pdf-parse'
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const formData = await request.formData()
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const formData = await req.formData()
     const file = formData.get('file') as File
     
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
-    const arrayBuffer = await file.arrayBuffer()
-    const buffer = Buffer.from(arrayBuffer)
+    const buffer = Buffer.from(await file.arrayBuffer())
     const data = await pdf(buffer)
     
     return NextResponse.json({ 
@@ -20,7 +26,7 @@ export async function POST(request: Request) {
       info: data.info 
     })
   } catch (error) {
-    console.error('Error processing PDF:', error)
+    console.error('PDF processing error:', error)
     return NextResponse.json({ error: 'Failed to process PDF' }, { status: 500 })
   }
 } 
