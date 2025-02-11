@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server'
-// import type { NextMiddleware } from 'next/server'
 import { withAuth } from "next-auth/middleware"
-import { NextRequestWithAuth } from 'next-auth/middleware'
+import type { NextRequest } from 'next/server'
 
 // Middleware function to handle CSP headers
-function middleware(request: NextRequestWithAuth) {
+function middleware(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
   const cspHeader = `
     default-src 'self';
@@ -35,7 +34,6 @@ function middleware(request: NextRequestWithAuth) {
     cspHeader
   )
 
-  // Add Cross-Origin-Isolation headers
   response.headers.set('Cross-Origin-Opener-Policy', 'same-origin')
   response.headers.set('Cross-Origin-Embedder-Policy', 'require-corp')
   response.headers.set('Cross-Origin-Resource-Policy', 'cross-origin')
@@ -43,11 +41,15 @@ function middleware(request: NextRequestWithAuth) {
   return response
 }
 
+// Export the auth middleware
 export default withAuth(
-  async function middleware(req) { 
-    return await middleware(req)
+  function auth(req) {
+    return middleware(req)
   },
   {
+    callbacks: {
+      authorized: ({ token }) => !!token
+    },
     pages: {
       signIn: '/auth/signin'
     }
