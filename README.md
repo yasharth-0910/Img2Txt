@@ -1,8 +1,8 @@
-# Img2Text - AI-Powered Image to Text Converter
+# TextractAI - AI-Powered Image to Text Converter
 
 ## Overview 📄
 
-Img2Txt is an advanced AI-powered application designed to convert images into text with high accuracy. Utilizing OCR (Optical Character Recognition) and AI-enhanced text analysis, Img2Txt offers a comprehensive solution for extracting and processing text from images.
+TextractAI  is an advanced AI-powered application designed to convert images into text with high accuracy. Utilizing OCR (Optical Character Recognition) and AI-enhanced text analysis, Img2Txt offers a comprehensive solution for extracting and processing text from images.
 
 ## Features 🚀
 
@@ -75,7 +75,7 @@ To get started with Img2Txt, follow these steps:
 
 ## Contributing 🤗
 
-We welcome contributions from the community. If you would like to contribute to Img2Txt, please follow these steps:
+We welcome contributions from the community. If you would like to contribute to TextractAI , please follow these steps:
 
     1. Fork the repository.
     2. Create a new branch for your feature or bugfix.
@@ -85,14 +85,14 @@ We welcome contributions from the community. If you would like to contribute to 
 
 ## License 📜
 
-We are under no Licence, but if you use our codebase please give credit.
+We are under no Licence, but if you use our codebase for any commercial use or project please give credit.
 
 ## Contact 📬
 
-If you have any questions or need further assistance, please contact us at [contact@yasharth.xyz](mailto:yasharthsingh0910@gmail.com).
+If you have any questions or need further assistance, please contact me at [contact@yasharth.xyz](mailto:yasharthsingh0910@gmail.com).
 
 ## Website 🌐
 
-Visit our website: [Img2Txt](https://imgtotext.yasharth.xyz/)
+Visit our website: [TextractAI](https://imgtotext.yasharth.xyz/)
 
 Thank you for your support!
