@@ -14,27 +14,15 @@ interface UPIPaymentProps {
 
 export function UPIPayment({ amount, planId, onSuccess }: UPIPaymentProps) {
   const [loading, setLoading] = useState(false)
-  const [upiId, setUpiId] = useState('')
   const phonepeLink = `upi://pay?pa=8448173449@ybl&pn=Img2Txt&am=${amount}&cu=INR&tn=Subscription`
-  const requiresVerification = amount >= 500 // Require verification for ₹500 or more
 
   const handlePayment = async () => {
     try {
       setLoading(true)
-      
-      if (requiresVerification && !upiId) {
-        toast.error('Please enter your UPI ID for verification')
-        return
-      }
-
       const response = await fetch('/api/subscription/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          planId, 
-          amount,
-          upiId: requiresVerification ? upiId : undefined
-        })
+        body: JSON.stringify({ planId, amount })
       })
 
       if (!response.ok) throw new Error('Failed to create subscription')
@@ -46,7 +34,7 @@ export function UPIPayment({ amount, planId, onSuccess }: UPIPaymentProps) {
           onSuccess()
         }
       }, 1000)
-    } catch (error) {
+    } catch {
       toast.error('Failed to initiate payment')
     } finally {
       setLoading(false)
@@ -60,28 +48,12 @@ export function UPIPayment({ amount, planId, onSuccess }: UPIPaymentProps) {
         <p className="text-sm text-muted-foreground">Scan with any UPI app</p>
       </div>
 
-      {requiresVerification && (
-        <div className="space-y-2">
-          <Label htmlFor="upiId">Your UPI ID for verification</Label>
-          <Input
-            id="upiId"
-            placeholder="Enter your UPI ID (e.g., name@upi)"
-            value={upiId}
-            onChange={(e) => setUpiId(e.target.value)}
-          />
-          <p className="text-sm text-muted-foreground flex items-center gap-2">
-            <AlertCircle className="w-4 h-4" />
-            Required for transactions over ₹500
-          </p>
-        </div>
-      )}
-
       <div className="flex flex-col gap-4">
         <Button 
           variant="outline" 
           className="w-full"
           onClick={() => window.open(phonepeLink, '_blank')}
-          disabled={loading || (requiresVerification && !upiId)}
+          disabled={loading}
         >
           <Smartphone className="w-4 h-4 mr-2" />
           Open in UPI App
@@ -90,7 +62,7 @@ export function UPIPayment({ amount, planId, onSuccess }: UPIPaymentProps) {
         <Button 
           className="w-full" 
           onClick={handlePayment}
-          disabled={loading || (requiresVerification && !upiId)}
+          disabled={loading}
         >
           Pay ₹{amount}
         </Button>
