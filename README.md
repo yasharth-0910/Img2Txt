@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Img2Text - AI-Powered Image to Text Converter
 
-## Getting Started
+## Overview 📄
 
-First, run the development server:
+Img2Txt is an advanced AI-powered application designed to convert images into text with high accuracy. Utilizing OCR (Optical Character Recognition) and AI-enhanced text analysis, Img2Txt offers a comprehensive solution for extracting and processing text from images.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features 🚀
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **OCR (Optical Character Recognition)** 📷: Convert images to text with high accuracy.
+- **AI Text Enhancement** 🧠: Improve the quality of extracted text using AI algorithms.
+- **Language Detection** 🌐: Automatically detect the language of the extracted text.
+- **Keyword Extraction** 🔍: Identify and extract key terms from the text.
+- **Document Analysis** 📑: Analyze and structure the extracted text for better readability.
+- **Subscription Management** 💳: Manage user subscriptions with different plans and features.
+- **Email Notifications** 📧: Send email notifications for subscription updates and other events.
+- **UPI Payment Integration** 💵: Handle payments through UPI for subscription plans.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Future Prospects 🌟
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+We are continuously working to enhance Img2Txt with new features and improvements. Some of the future prospects include:
 
-## Learn More
+- **Premium Subscription Plans** 🏅: Introduce premium plans with additional features and benefits.
+- **Advanced Text Analysis** 🔬: Implement more sophisticated text analysis tools.
+- **Multi-language Support** 🗣️: Expand support for more languages.
+- **Mobile Application** 📱: Develop a mobile app for on-the-go text extraction.
+- **Integration with Cloud Services** ☁️: Enable integration with popular cloud storage and processing services.
 
-To learn more about Next.js, take a look at the following resources:
+## Sponsorship 🤝
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+We are actively seeking sponsors to support the development and maintenance of Img2Txt. Your sponsorship will help us:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Accelerate the development of new features.
+- Improve the accuracy and performance of our AI models.
+- Expand our infrastructure to handle more users and data.
+- Provide better support and documentation for our users.
 
-## Deploy on Vercel
+If you are interested in sponsoring Img2Txt, please visit our [GitHub Sponsors page](https://github.com/sponsors/yasharth-0910).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Getting Started 🛠️
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+To get started with Img2Txt, follow these steps:
+
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/yasharth-0910/imgtotext.git
+    cd imgtotext
+    ```
+
+2. **Install dependencies**:
+    ```bash
+    npm install --legacy-peer-deps
+    ```
+
+3. **Set up environment variables**:
+    Create a `.env` file in the root directory and add the necessary environment variables:
+    ```env
+    GOOGLE_CLIENT_ID
+    GOOGLE_CLIENT_SECRET
+    NEXTAUTH_SECRET
+    NEXTAUTH_URL
+    GEMINI_API_KEY
+    DATABASE_URL
+    MERCHANT_UPI_ID
+    ADMIN_EMAILS
+    RESEND_API_KEY
+    ```
+
+4. **Run the application**:
+    ```bash
+    npm run dev
+    ```
+
+5. **Access the application**:
+    Open your browser and navigate to `http://localhost:3000`.
+
+## Contributing 🤗
+
+We welcome contributions from the community. If you would like to contribute to Img2Txt, please follow these steps:
+
+    1. Fork the repository.
+    2. Create a new branch for your feature or bugfix.
+    3. Make your changes and commit them with a clear message.
+    4. Push your changes to your forked repository.
+    5. Create a pull request to the main repository.
+
+## License 📜
+
+We are under no Licence, but if you use our codebase please give credit.
+
+## Contact 📬
+
+If you have any questions or need further assistance, please contact us at [contact@yasharth.xyz](mailto:yasharthsingh0910@gmail.com).
+
+## Website 🌐
+
+Visit our website: [Img2Txt](https://imgtotext.yasharth.xyz/)
+
+Thank you for your support!
