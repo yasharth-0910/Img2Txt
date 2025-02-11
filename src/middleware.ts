@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { withAuth } from "next-auth/middleware"
-import type { NextMiddleware } from "next-auth/middleware"
+// Correct the import statement for NextMiddleware
+import NextMiddleware from "next-auth/middleware"
 
 // Middleware function to handle CSP headers
 function middleware(request: NextRequest) {
@@ -75,4 +76,4 @@ export const config = {
     "/api/conversions/:path*",
     "/admin/:path*"
   ],
-} 
+}
