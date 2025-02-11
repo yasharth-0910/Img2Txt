@@ -11,7 +11,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { planId, amount } = await req.json()
+    const { amount } = await req.json()
+
     const orderId = `order_${uuidv4()}`
 
     const order = await createPaymentOrder({

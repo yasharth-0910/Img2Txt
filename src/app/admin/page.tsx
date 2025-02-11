@@ -32,7 +32,7 @@ export default function AdminDashboard() {
       const response = await fetch('/api/admin/subscriptions/pending')
       const data = await response.json()
       setPendingSubscriptions(data.subscriptions)
-    } catch (error) {
+    } catch (_) {
       toast.error('Failed to fetch pending subscriptions')
     } finally {
       setLoading(false)
@@ -51,7 +51,7 @@ export default function AdminDashboard() {
       
       toast.success(approve ? 'Subscription approved' : 'Subscription rejected')
       fetchPendingSubscriptions()
-    } catch (error) {
+    } catch (_) {
       toast.error('Failed to process verification')
     }
   }

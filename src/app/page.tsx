@@ -11,28 +11,12 @@ import Link from 'next/link'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from 'sonner'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import Image from "next/image"
 import { enhanceImage } from '@/lib/imageProcessing'
-import { BatchProcessing } from "@/components/BatchProcessing"
-import { Slider } from "@/components/ui/slider"
 import { useSubscription } from '@/hooks/useSubscription'
 import { useSession } from "next-auth/react"
-import { v4 as uuidv4 } from 'uuid'
-import { TextStats } from '@/components/text-stats'
-import { TextComparison } from '@/components/text-comparison'
-import { ShareDialog } from '@/components/share-dialog'
-import { exportToPDF } from '@/lib/pdfExport'
 
 interface SavedText {
   text: string;
@@ -86,7 +70,7 @@ export default function Home() {
     denoise: false,
     autoRotate: true
   })
-  const { plan, loading: loadingPlan } = useSubscription()
+  const { plan } = useSubscription()
   const { data: session } = useSession()
 
   // Load saved texts from localStorage on mount
@@ -413,72 +397,6 @@ export default function Home() {
       </div>
     )
   )
-
-  const renderEnhancementOptions = () => (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <Label htmlFor="contrast">Contrast</Label>
-        <Slider
-          id="contrast"
-          min={-100}
-          max={100}
-          value={[enhancementOptions.contrast]}
-          onValueChange={([value]) => 
-            setEnhancementOptions(prev => ({ ...prev, contrast: value }))
-          }
-          className="w-[60%]"
-        />
-      </div>
-      
-      <div className="flex items-center justify-between">
-        <Label htmlFor="brightness">Brightness</Label>
-        <Slider
-          id="brightness"
-          min={-100}
-          max={100}
-          value={[enhancementOptions.brightness]}
-          onValueChange={([value]) => 
-            setEnhancementOptions(prev => ({ ...prev, brightness: value }))
-          }
-          className="w-[60%]"
-        />
-      </div>
-
-      <div className="flex gap-4">
-        <div className="flex items-center gap-2">
-          <Switch
-            id="sharpen"
-            checked={enhancementOptions.sharpen}
-            onCheckedChange={(checked) => 
-              setEnhancementOptions(prev => ({ ...prev, sharpen: checked }))
-            }
-          />
-          <Label htmlFor="sharpen">Sharpen</Label>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Switch
-            id="denoise"
-            checked={enhancementOptions.denoise}
-            onCheckedChange={(checked) => 
-              setEnhancementOptions(prev => ({ ...prev, denoise: checked }))
-            }
-          />
-          <Label htmlFor="denoise">Denoise</Label>
-        </div>
-      </div>
-    </div>
-  )
-
-  const handleBatchComplete = (results: { file: File; text: string }[]) => {
-    // Handle batch results
-    const combinedText = results.map(r => 
-      `=== ${r.file.name} ===\n${r.text}\n\n`
-    ).join('')
-    setExtractedText(combinedText)
-  }
-
-  const maxBatchSize = plan?.limits?.batchSize || 1
 
   return (
     <main className="min-h-screen p-4 md:p-8 bg-gradient-to-b from-background to-muted">

@@ -16,7 +16,7 @@ export const authOptions: AuthOptions = {
     signIn: '/auth/signin',
   },
   callbacks: {
-    jwt: async ({ token, user, account }) => {
+    jwt: async ({ token, user }) => {
       if (user) {
         token.id = user.id
       }
@@ -34,6 +34,9 @@ export const authOptions: AuthOptions = {
       // Allows callback URLs on the same origin
       else if (new URL(url).origin === baseUrl) return url
       return baseUrl
+    },
+    signIn: async ({ user }) => {
+      // ... rest of the code
     }
   },
   session: {
