@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+// import type { NextMiddleware } from 'next/server'
 import { withAuth } from "next-auth/middleware"
-import type { NextAuthMiddleware } from "next-auth/middleware"
+import { NextRequestWithAuth } from 'next-auth/middleware'
 
 // Middleware function to handle CSP headers
-function middleware(request: NextRequest) {
+function middleware(request: NextRequestWithAuth) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
   const cspHeader = `
     default-src 'self';
@@ -43,15 +43,16 @@ function middleware(request: NextRequest) {
   return response
 }
 
-// Export the middleware with proper typing
-export default withAuth(middleware as NextAuthMiddleware, {
-  callbacks: {
-    authorized: ({ token }) => !!token
+export default withAuth(
+  async function middleware(req) { 
+    return await middleware(req)
   },
-  pages: {
-    signIn: '/auth/signin'
+  {
+    pages: {
+      signIn: '/auth/signin'
+    }
   }
-})
+)
 
 export const config = {
   matcher: [
