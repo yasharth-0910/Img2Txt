@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { withAuth } from "next-auth/middleware"
+import type { NextMiddleware } from "next-auth/middleware"
 
 // Middleware function to handle CSP headers
 function middleware(request: NextRequest) {
@@ -42,8 +43,8 @@ function middleware(request: NextRequest) {
   return response
 }
 
-// Add type for middleware function
-export default withAuth(middleware as unknown as MiddlewareFactory, {
+// Export the middleware with proper typing
+export default withAuth(middleware as NextMiddleware, {
   callbacks: {
     authorized: ({ token }) => !!token
   },
