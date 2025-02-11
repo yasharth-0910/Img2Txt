@@ -11,9 +11,9 @@ Img2Txt is an advanced AI-powered application designed to convert images into te
 - **Language Detection** 🌐: Automatically detect the language of the extracted text.
 - **Keyword Extraction** 🔍: Identify and extract key terms from the text.
 - **Document Analysis** 📑: Analyze and structure the extracted text for better readability.
-- **Subscription Management** 💳: Manage user subscriptions with different plans and features.
+- **Subscription Management** 💳: Manage user subscriptions with different plans and features. (Coming Soon)
 - **Email Notifications** 📧: Send email notifications for subscription updates and other events.
-- **UPI Payment Integration** 💵: Handle payments through UPI for subscription plans.
+- **UPI Payment Integration** 💵: Handle payments through UPI for subscription plans. (Under Development)
 
 ## Future Prospects 🌟
 
