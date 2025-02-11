@@ -42,8 +42,8 @@ function middleware(request: NextRequest) {
   return response
 }
 
-// Combine with authentication middleware
-export default withAuth(middleware as any, {
+// Add type for middleware function
+export default withAuth(middleware as unknown as MiddlewareFactory, {
   callbacks: {
     authorized: ({ token }) => !!token
   },

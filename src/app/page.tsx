@@ -6,7 +6,7 @@ import { createWorker } from 'tesseract.js'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { Copy, Upload, RefreshCcw, Github, Volume2, Languages, History, Bot, Wand2, Search, Tags, Download } from "lucide-react"
+import { Upload, RefreshCcw, Github, Volume2, Languages, Search, Tags, Download } from "lucide-react"
 import Link from 'next/link'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from 'sonner'
@@ -104,12 +104,12 @@ export default function Home() {
         text: extractedText,
         timestamp: Date.now(),
         language: selectedLanguage
-      }, ...savedTexts].slice(0, 10) // Keep last 10 entries
+      }, ...savedTexts].slice(0, 10)
       
       setSavedTexts(newSavedTexts)
       localStorage.setItem('extractedTexts', JSON.stringify(newSavedTexts))
     }
-  }, [extractedText])
+  }, [extractedText, savedTexts, selectedLanguage])
 
   const saveConversion = async (text: string, filename: string) => {
     if (!session?.user?.email) return
@@ -226,7 +226,7 @@ export default function Home() {
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return
     await processFile(acceptedFiles[0])
-  }, [])
+  }, [processFile])
 
   const handlePaste = useCallback(async (event: React.ClipboardEvent) => {
     const items = event.clipboardData?.items

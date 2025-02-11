@@ -28,7 +28,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ 
       translatedText: data.data.translations[0].translatedText 
     })
-  } catch (error) {
+  } catch (error: unknown) {
+    console.error('Translation error:', error)
     return NextResponse.json({ error: 'Translation failed' }, { status: 500 })
   }
 } 
