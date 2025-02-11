@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
 export async function sendSubscriptionEmail({ 
   to, 
@@ -11,6 +11,11 @@ export async function sendSubscriptionEmail({
   status: 'approved' | 'rejected'
   planId: string
 }) {
+  if (!resend) {
+    console.log('Email notification skipped - Resend API key not configured')
+    return
+  }
+
   const subject = status === 'approved' 
     ? 'Your subscription has been approved!' 
     : 'Subscription update'
@@ -29,7 +34,7 @@ export async function sendSubscriptionEmail({
 
   try {
     await resend.emails.send({
-      from: 'Img2Txt <notifications@your-domain.com>',
+      from: 'Img2Txt <notifications@imgtotext.yasharth.xyz>',
       to,
       subject,
       html

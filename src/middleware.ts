@@ -71,7 +71,6 @@ export const config = {
     },
     "/settings",
     "/dashboard",
-    "/api/stripe/:path*",
     "/api/conversions/:path*",
     "/admin/:path*"
   ],
