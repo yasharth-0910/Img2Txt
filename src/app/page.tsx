@@ -6,7 +6,7 @@ import { createWorker } from 'tesseract.js'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { Copy, Upload, RefreshCcw, Github, Volume2, Languages, History, Bot, Wand2, Search, Tags } from "lucide-react"
+import { Copy, Upload, RefreshCcw, Github, Volume2, Languages, History, Bot, Wand2, Search, Tags, Download } from "lucide-react"
 import Link from 'next/link'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from 'sonner'
@@ -20,6 +20,19 @@ import {
 } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+import Image from "next/image"
+import { enhanceImage } from '@/lib/imageProcessing'
+import { BatchProcessing } from "@/components/BatchProcessing"
+import { Slider } from "@/components/ui/slider"
+import { useSubscription } from '@/hooks/useSubscription'
+import { useSession } from "next-auth/react"
+import { v4 as uuidv4 } from 'uuid'
+import { TextStats } from '@/components/text-stats'
+import { TextComparison } from '@/components/text-comparison'
+import { ShareDialog } from '@/components/share-dialog'
+import { exportToPDF } from '@/lib/pdfExport'
 
 interface SavedText {
   text: string;
@@ -63,6 +76,18 @@ export default function Home() {
   const [savedTexts, setSavedTexts] = useState<SavedText[]>([])
   const [aiAnalysis, setAiAnalysis] = useState<AIAnalysis>({})
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [useImageEnhancement, setUseImageEnhancement] = useState(false)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [enhancementOptions, setEnhancementOptions] = useState({
+    grayscale: true,
+    contrast: 20,
+    brightness: 0,
+    sharpen: false,
+    denoise: false,
+    autoRotate: true
+  })
+  const { plan, loading: loadingPlan } = useSubscription()
+  const { data: session } = useSession()
 
   // Load saved texts from localStorage on mount
   useEffect(() => {
@@ -86,24 +111,64 @@ export default function Home() {
     }
   }, [extractedText])
 
+  const saveConversion = async (text: string, filename: string) => {
+    if (!session?.user?.email) return
+
+    try {
+      await fetch('/api/conversions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text,
+          filename,
+          language: selectedLanguage
+        })
+      })
+    } catch (error) {
+      console.error('Error saving conversion:', error)
+    }
+  }
+
   const processImage = async (file: File | Blob) => {
+    if (!plan?.limits?.enhancementOptions && useImageEnhancement) {
+      toast.error('Image enhancement is a Pro feature')
+      return
+    }
+    
     setIsProcessing(true)
     setProgress(0)
     try {
+      let imageToProcess = file
+
+      if (useImageEnhancement && file instanceof File) {
+        imageToProcess = await enhanceImage(file)
+        setPreviewUrl(URL.createObjectURL(imageToProcess))
+      }
+
       const worker = await createWorker({
-        logger: (m) => {
+        workerPath: '/tesseract/worker.min.js',
+        corePath: '/tesseract/tesseract-core.wasm.js',
+        logger: m => {
           if (m.status === 'recognizing text') {
             setProgress(Math.round(m.progress * 100))
           }
+        },
+        errorHandler: err => {
+          console.error('Worker error:', err)
+          toast.error('Error processing image')
         }
       })      
       
-      const imageUrl = URL.createObjectURL(file)
+      const imageUrl = URL.createObjectURL(imageToProcess)
       await worker.loadLanguage(selectedLanguage)
       await worker.initialize(selectedLanguage)
       
       const { data: { text } } = await worker.recognize(imageUrl)
       setExtractedText(text)
+      
+      if (session?.user?.email) {
+        await saveConversion(text, file instanceof File ? file.name : 'image.png')
+      }
       
       await worker.terminate()
     } catch (error) {
@@ -276,157 +341,148 @@ export default function Home() {
     setIsAnalyzing(false)
   }
 
-  const renderAIButtons = () => (
-    <div className="flex flex-wrap gap-2 mt-4">
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            onClick={() => processWithAI('enhance')}
-          >
-            <Wand2 className="w-4 h-4" />
-            Enhance Text
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Enhanced Text</DialogTitle>
-          </DialogHeader>
-          <Tabs defaultValue="enhanced" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="original">Original</TabsTrigger>
-              <TabsTrigger value="enhanced">Enhanced</TabsTrigger>
-            </TabsList>
-            <TabsContent value="original">
-              <ScrollArea className="h-[60vh] w-full rounded-md border p-4">
-                <p className="whitespace-pre-wrap">{extractedText}</p>
-              </ScrollArea>
-            </TabsContent>
-            <TabsContent value="enhanced">
-              <ScrollArea className="h-[60vh] w-full rounded-md border p-4">
-                {isAnalyzing ? (
-                  <div className="flex items-center justify-center h-full">
-                    <Progress value={100} className="w-[60%]" />
-                  </div>
-                ) : (
-                  <p className="whitespace-pre-wrap">{aiAnalysis.enhanced}</p>
-                )}
-              </ScrollArea>
-            </TabsContent>
-          </Tabs>
-        </DialogContent>
-      </Dialog>
+  const downloadFile = (content: string | Blob, filename: string) => {
+    const url = content instanceof Blob ? 
+      URL.createObjectURL(content) : 
+      URL.createObjectURL(new Blob([content], { type: 'text/plain' }))
+    
+    const link = document.createElement('a')
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
 
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            onClick={() => processWithAI('keywords')}
-          >
-            <Tags className="w-4 h-4" />
-            Extract Keywords
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Keywords</DialogTitle>
-          </DialogHeader>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {isAnalyzing ? (
-              <Progress value={100} className="w-[60%]" />
-            ) : (
-              aiAnalysis.keywords?.map((keyword, index) => (
-                <span
-                  key={index}
-                  className="px-2 py-1 bg-primary/10 rounded-full text-sm"
-                >
-                  {keyword}
-                </span>
-              ))
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+  const exportText = async (format: 'txt' | 'json') => {
+    if (!extractedText) return
+    
+    const timestamp = new Date().toISOString().split('T')[0]
+    const filename = `extracted-text-${timestamp}`
+    
+    switch (format) {
+      case 'txt':
+        downloadFile(extractedText, `${filename}.txt`)
+        break
+        
+      case 'json':
+        const jsonData = {
+          text: extractedText,
+          metadata: {
+            timestamp: Date.now(),
+            language: selectedLanguage,
+            aiAnalysis: aiAnalysis
+          }
+        }
+        downloadFile(
+          JSON.stringify(jsonData, null, 2),
+          `${filename}.json`
+        )
+        break
+    }
+    
+    toast.success(`Exported as ${format.toUpperCase()}`)
+  }
 
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            onClick={() => processWithAI('analyze')}
-          >
-            <Bot className="w-4 h-4" />
-            AI Analysis
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>AI Analysis</DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="h-[60vh] w-full rounded-md border p-4">
-            {isAnalyzing ? (
-              <div className="flex items-center justify-center h-full">
-                <Progress value={100} className="w-[60%]" />
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <p className="whitespace-pre-wrap">{aiAnalysis.analysis}</p>
-                <div className="pt-4 border-t">
-                  <p className="text-sm text-muted-foreground">Original Text:</p>
-                  <p className="mt-2 text-sm whitespace-pre-wrap">{extractedText}</p>
-                </div>
-              </div>
-            )}
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            onClick={() => processWithAI('classify')}
-          >
-            <Search className="w-4 h-4" />
-            Classify
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Document Classification</DialogTitle>
-          </DialogHeader>
-          <div className="mt-4">
-            {isAnalyzing ? (
-              <Progress value={100} className="w-[60%]" />
-            ) : aiAnalysis.classification ? (
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold">Category:</span>
-                  <span className="px-2 py-1 bg-primary/10 rounded-full text-sm">
-                    {aiAnalysis.classification.category}
-                  </span>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  {aiAnalysis.classification.explanation}
-                </p>
-              </div>
-            ) : null}
-          </div>
-        </DialogContent>
-      </Dialog>
+  const renderEnhancementToggle = () => (
+    <div className="flex items-center gap-2">
+      <Switch
+        id="image-enhancement"
+        checked={useImageEnhancement}
+        onCheckedChange={setUseImageEnhancement}
+      />
+      <Label htmlFor="image-enhancement">
+        Enable Image Enhancement
+      </Label>
     </div>
   )
 
+  const renderPreview = () => (
+    previewUrl && (
+      <div className="mt-4">
+        <p className="text-sm text-muted-foreground mb-2">Enhanced Image Preview:</p>
+        <div className="relative aspect-video w-full max-w-sm mx-auto">
+          <Image
+            src={previewUrl}
+            alt="Enhanced preview"
+            fill
+            className="object-contain rounded-lg"
+          />
+        </div>
+      </div>
+    )
+  )
+
+  const renderEnhancementOptions = () => (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <Label htmlFor="contrast">Contrast</Label>
+        <Slider
+          id="contrast"
+          min={-100}
+          max={100}
+          value={[enhancementOptions.contrast]}
+          onValueChange={([value]) => 
+            setEnhancementOptions(prev => ({ ...prev, contrast: value }))
+          }
+          className="w-[60%]"
+        />
+      </div>
+      
+      <div className="flex items-center justify-between">
+        <Label htmlFor="brightness">Brightness</Label>
+        <Slider
+          id="brightness"
+          min={-100}
+          max={100}
+          value={[enhancementOptions.brightness]}
+          onValueChange={([value]) => 
+            setEnhancementOptions(prev => ({ ...prev, brightness: value }))
+          }
+          className="w-[60%]"
+        />
+      </div>
+
+      <div className="flex gap-4">
+        <div className="flex items-center gap-2">
+          <Switch
+            id="sharpen"
+            checked={enhancementOptions.sharpen}
+            onCheckedChange={(checked) => 
+              setEnhancementOptions(prev => ({ ...prev, sharpen: checked }))
+            }
+          />
+          <Label htmlFor="sharpen">Sharpen</Label>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Switch
+            id="denoise"
+            checked={enhancementOptions.denoise}
+            onCheckedChange={(checked) => 
+              setEnhancementOptions(prev => ({ ...prev, denoise: checked }))
+            }
+          />
+          <Label htmlFor="denoise">Denoise</Label>
+        </div>
+      </div>
+    </div>
+  )
+
+  const handleBatchComplete = (results: { file: File; text: string }[]) => {
+    // Handle batch results
+    const combinedText = results.map(r => 
+      `=== ${r.file.name} ===\n${r.text}\n\n`
+    ).join('')
+    setExtractedText(combinedText)
+  }
+
+  const maxBatchSize = plan?.limits?.batchSize || 1
+
   return (
     <main className="min-h-screen p-4 md:p-8 bg-gradient-to-b from-background to-muted">
-      <div className="max-w-3xl mx-auto space-y-8">
+      <div className="max-w-4xl mx-auto space-y-8">
         <Card className="border-none shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <CardHeader>
             <div className="flex justify-between items-center">
@@ -482,8 +538,21 @@ export default function Home() {
                 </SelectContent>
               </Select>
             </div>
+            <div className="flex gap-2">
+              <Select onValueChange={exportText}>
+                <SelectTrigger className="w-[130px]">
+                  <Download className="w-4 h-4 mr-2" />
+                  <SelectValue placeholder="Export As..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="txt">Text (.txt)</SelectItem>
+                  <SelectItem value="json">JSON</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </CardHeader>
           <CardContent className="space-y-6">
+            {plan?.limits?.enhancementOptions && renderEnhancementToggle()}
             <div
               {...getRootProps()}
               onPaste={handlePaste}
@@ -515,6 +584,7 @@ export default function Home() {
                 )}
               </div>
             </div>
+            {renderPreview()}
 
             {extractedText && (
               <>
@@ -557,7 +627,104 @@ export default function Home() {
                     </p>
                   </CardContent>
                 </Card>
-                {renderAIButtons()}
+
+                <div className="flex flex-col gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => processWithAI('enhance')}
+                      disabled={isAnalyzing}
+                    >
+                      <Wand2 className="w-4 h-4 mr-2" />
+                      Enhance Text
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => processWithAI('keywords')}
+                      disabled={isAnalyzing}
+                    >
+                      <Tags className="w-4 h-4 mr-2" />
+                      Extract Keywords
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => processWithAI('analyze')}
+                      disabled={isAnalyzing}
+                    >
+                      <Search className="w-4 h-4 mr-2" />
+                      Analyze Content
+                    </Button>
+                  </div>
+
+                  {isAnalyzing && (
+                    <div className="flex items-center gap-4">
+                      <Progress value={undefined} className="flex-1" />
+                      <span className="text-sm text-muted-foreground">Processing with AI...</span>
+                    </div>
+                  )}
+
+                  {plan?.limits?.aiAnalysis ? (
+                    Object.keys(aiAnalysis).length > 0 && (
+                      <div className="space-y-6">
+                        {aiAnalysis.enhanced && (
+                          <div className="p-6 rounded-lg bg-muted/50">
+                            <h3 className="text-lg font-semibold mb-3">Enhanced Text</h3>
+                            <div className="prose prose-sm dark:prose-invert max-w-none">
+                              {aiAnalysis.enhanced.split('\n').map((paragraph, i) => (
+                                <p key={i} className="mb-4 leading-relaxed">
+                                  {paragraph}
+                                </p>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {aiAnalysis.keywords && (
+                          <div className="p-6 rounded-lg bg-muted/50">
+                            <h3 className="text-lg font-semibold mb-3">Keywords</h3>
+                            <div className="flex flex-wrap gap-2">
+                              {aiAnalysis.keywords.map((keyword, i) => (
+                                <span 
+                                  key={i} 
+                                  className="bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-medium"
+                                >
+                                  {keyword}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {aiAnalysis.analysis && (
+                          <div className="p-6 rounded-lg bg-muted/50">
+                            <h3 className="text-lg font-semibold mb-3">Content Analysis</h3>
+                            <div className="space-y-4 text-sm leading-relaxed">
+                              {aiAnalysis.analysis.split('**').map((section, i) => {
+                                if (i % 2 === 1) { // Headings
+                                  return (
+                                    <h4 key={i} className="font-medium text-primary mt-4">
+                                      {section}
+                                    </h4>
+                                  )
+                                }
+                                // Content sections
+                                return section.split('*').map((text, j) => (
+                                  <p key={`${i}-${j}`} className="ml-4">
+                                    {text.startsWith(' ') ? text.substring(1) : text}
+                                  </p>
+                                ))
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  ) : (
+                    <p className="text-muted-foreground text-sm">
+                      AI analysis is available in Pro plan
+                    </p>
+                  )}
+                </div>
               </>
             )}
           </CardContent>
