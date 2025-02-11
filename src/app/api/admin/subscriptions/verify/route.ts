@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { prisma } from "@/lib/prisma"
-import { authOptions } from "../../../auth/[...nextauth]/route"
+import { authOptions } from "@/lib/auth"
 import { sendSubscriptionEmail } from "@/lib/email"
 
 export async function POST(req: Request) {
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
         status: approve ? 'active' : 'rejected',
         currentPeriodEnd: approve 
           ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) 
-          : null
+          : undefined
       },
       include: {
         user: true

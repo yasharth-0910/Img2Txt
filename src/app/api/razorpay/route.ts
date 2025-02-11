@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import Razorpay from "razorpay"
-import { authOptions } from "../auth/[...nextauth]/route"
+import { authOptions } from "@/lib/auth"
 import { handleApiError } from "@/middleware/error"
 import { plans } from "@/config/subscriptions"
 

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { prisma } from "@/lib/prisma"
-import { authOptions } from "../../auth/[...nextauth]/route"
+import { authOptions } from "@/lib/auth"
 
 export async function POST(req: Request) {
   try {
@@ -20,13 +20,13 @@ export async function POST(req: Request) {
       create: {
         userId: session.user.id,
         status: 'active',
-        planId,
+        planId: planId,
         amount,
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
       },
       update: {
         status: 'active',
-        planId,
+        planId: planId,
         amount,
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
       }
