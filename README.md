@@ -2,7 +2,7 @@
 
 ## Overview 📄
 
-TextractAI  is an advanced AI-powered application designed to convert images into text with high accuracy. Utilizing OCR (Optical Character Recognition) and AI-enhanced text analysis, Img2Txt offers a comprehensive solution for extracting and processing text from images.
+TextractAI  is an advanced AI-powered application designed to convert images into text with high accuracy. Utilizing OCR (Optical Character Recognition) and AI-enhanced text analysis, TextractAI  offers a comprehensive solution for extracting and processing text from images.
 
 ## Features 🚀
 
@@ -17,7 +17,7 @@ TextractAI  is an advanced AI-powered application designed to convert images int
 
 ## Future Prospects 🌟
 
-We are continuously working to enhance Img2Txt with new features and improvements. Some of the future prospects include:
+We are continuously working to enhance TextractAI  with new features and improvements. Some of the future prospects include:
 
 - **Premium Subscription Plans** 🏅: Introduce premium plans with additional features and benefits.
 - **Advanced Text Analysis** 🔬: Implement more sophisticated text analysis tools.
@@ -27,7 +27,7 @@ We are continuously working to enhance Img2Txt with new features and improvement
 
 ## Sponsorship 🤝
 
-We are actively seeking sponsors to support the development and maintenance of Img2Txt. Your sponsorship will help us:
+We are actively seeking sponsors to support the development and maintenance of TextractAI . Your sponsorship will help us:
 
 - Accelerate the development of new features.
 - Improve the accuracy and performance of our AI models.
