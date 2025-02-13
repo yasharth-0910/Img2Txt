@@ -52,7 +52,8 @@ const nextConfig = {
       'react/jsx-runtime': require.resolve('react/jsx-runtime'),
       'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime'),
       'react': require.resolve('react'),
-      'react-dom': require.resolve('react-dom')
+      'react-dom': require.resolve('react-dom'),
+      'react-dom/server': require.resolve('react-dom/server')
     }
 
     // Add fallback for node modules
@@ -60,6 +61,7 @@ const nextConfig = {
       ...config.resolve.fallback,
       fs: false,
       path: false,
+      'react-dom/server': require.resolve('react-dom/server'),
     }
 
     return config
@@ -71,7 +73,9 @@ const nextConfig = {
     'recharts',
     '@radix-ui/react-select',
     '@radix-ui/react-dialog',
-    '@radix-ui/react-slot'
+    '@radix-ui/react-slot',
+    '@react-email/render',
+    'resend'
   ]
 }
 

@@ -1,45 +1,30 @@
 import { Resend } from 'resend'
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+const resend = new Resend(process.env.RESEND_API_KEY)
 
-export async function sendSubscriptionEmail({ 
-  to, 
-  status, 
-  planId 
-}: { 
+interface EmailParams {
   to: string
   status: 'approved' | 'rejected'
   planId: string
-}) {
-  if (!resend) {
-    console.log('Email notification skipped - Resend API key not configured')
-    return
-  }
+}
 
-  const subject = status === 'approved' 
-    ? 'Your subscription has been approved!' 
-    : 'Subscription update'
-
-  const html = status === 'approved'
-    ? `
-      <h1>Your subscription is active!</h1>
-      <p>Your ${planId} plan subscription has been approved and is now active.</p>
-      <p>You can now enjoy all the premium features.</p>
-    `
-    : `
-      <h1>Subscription Update</h1>
-      <p>Unfortunately, we couldn't verify your subscription payment.</p>
-      <p>Please contact support if you believe this is an error.</p>
-    `
-
+export async function sendSubscriptionEmail({ to, status, planId }: EmailParams) {
   try {
+    const subject = status === 'approved' 
+      ? 'Your subscription has been approved!' 
+      : 'Subscription update'
+
+    const text = status === 'approved'
+      ? `Your subscription to the ${planId} plan has been approved. You can now access all features.`
+      : `Your subscription request for the ${planId} plan could not be processed at this time.`
+
     await resend.emails.send({
-      from: 'Img2Txt <notifications@imgtotext.yasharth.xyz>',
+      from: 'noreply@yourdomain.com',
       to,
       subject,
-      html
+      text
     })
   } catch (error) {
-    console.error('Email send error:', error)
+    console.error('Failed to send email:', error)
   }
 } 
