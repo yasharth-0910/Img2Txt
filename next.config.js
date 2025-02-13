@@ -5,6 +5,10 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true, // Temporarily disable ESLint during build
   },
+  compiler: {
+    // Use SWC for compilation
+    styledComponents: true,
+  },
   async headers() {
     return [
       {
