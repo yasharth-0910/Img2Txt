@@ -12,6 +12,7 @@ import Link from "next/link"
 import { ComingSoonBanner } from '@/components/coming-soon-banner'
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { headers } from 'next/headers'
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -41,6 +42,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // Force dynamic rendering
+  headers()
+  
   return (
     <html lang="en" suppressHydrationWarning>
       <head>

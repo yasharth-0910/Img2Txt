@@ -51,6 +51,8 @@ const languages: Languages = {
   chi_sim: 'Chinese Simplified'
 }
 
+export const dynamic = 'force-dynamic'
+
 export default function Home() {
   const [extractedText, setExtractedText] = useState<string>('')
   const [isProcessing, setIsProcessing] = useState(false)

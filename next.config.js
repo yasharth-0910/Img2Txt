@@ -2,6 +2,10 @@
 const path = require('path')
 
 const nextConfig = {
+  output: 'standalone',
+  experimental: {
+    serverActions: true,
+  },
   eslint: {
     ignoreDuringBuilds: true, // Temporarily disable ESLint during build
   },
