@@ -121,12 +121,15 @@ export default function Home() {
     
     setIsProcessing(true)
     setProgress(0)
+    
     try {
       let imageToProcess = file
+      let previewUrlToSet = null
 
       if (useImageEnhancement && file instanceof File) {
         imageToProcess = await enhanceImage(file)
-        setPreviewUrl(URL.createObjectURL(imageToProcess))
+        previewUrlToSet = URL.createObjectURL(imageToProcess)
+        setPreviewUrl(previewUrlToSet)
       }
 
       const worker = await createWorker({
@@ -143,11 +146,11 @@ export default function Home() {
         }
       })      
       
-      const imageUrl = URL.createObjectURL(imageToProcess)
       await worker.loadLanguage(selectedLanguage)
       await worker.initialize(selectedLanguage)
       
-      const { data: { text } } = await worker.recognize(imageUrl)
+      const { data: { text } } = await worker.recognize(imageToProcess)
+      
       setExtractedText(text)
       
       if (session?.user?.email) {
@@ -155,11 +158,16 @@ export default function Home() {
       }
       
       await worker.terminate()
+
+      if (previewUrlToSet) {
+        URL.revokeObjectURL(previewUrlToSet)
+      }
     } catch (error) {
       console.error('Error processing image:', error)
       toast.error('Error processing image. Please try again.')
+    } finally {
+      setIsProcessing(false)
     }
-    setIsProcessing(false)
   }
 
   const processTextFile = async (file: File) => {

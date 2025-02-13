@@ -45,6 +45,23 @@ const nextConfig = {
       }
     ]
   },
+  webpack: (config, { isServer }) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'react': require.resolve('react'),
+      'react-dom': require.resolve('react-dom')
+    }
+    return config
+  },
+  // Add transpilePackages to ensure consistent React version
+  transpilePackages: [
+    'react-dropzone',
+    'react-mathjax',
+    'recharts',
+    '@radix-ui/react-select',
+    '@radix-ui/react-dialog',
+    '@radix-ui/react-slot'
+  ]
 }
 
 module.exports = nextConfig 
