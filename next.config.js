@@ -46,16 +46,30 @@ const nextConfig = {
     ]
   },
   webpack: (config, { isServer }) => {
-    // Handle React and JSX runtime
+    if (!isServer) {
+      // Client-side specific config
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'react': require.resolve('react'),
+        'react-dom': require.resolve('react-dom'),
+        'react-dom/client': require.resolve('react-dom/client')
+      }
+    } else {
+      // Server-side specific config
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'react': require.resolve('react'),
+        'react-dom': require.resolve('react-dom'),
+        'react-dom/server': require.resolve('react-dom/server'),
+        'react-dom/server.browser': require.resolve('react-dom/server.browser')
+      }
+    }
+
+    // Common config
     config.resolve.alias = {
       ...config.resolve.alias,
       'react/jsx-runtime': require.resolve('react/jsx-runtime'),
-      'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime'),
-      'react': require.resolve('react'),
-      'react-dom': require.resolve('react-dom'),
-      'react-dom/client': require.resolve('react-dom/client'),
-      'react-dom/server': require.resolve('react-dom/server'),
-      'react-dom/server.browser': require.resolve('react-dom/server.browser')
+      'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime')
     }
 
     // Add fallbacks for node modules
@@ -79,7 +93,9 @@ const nextConfig = {
     'recharts',
     '@radix-ui/react-select',
     '@radix-ui/react-dialog',
-    '@radix-ui/react-slot'
+    '@radix-ui/react-slot',
+    '@vercel/analytics',
+    '@vercel/speed-insights'
   ]
 }
 

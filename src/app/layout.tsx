@@ -10,6 +10,8 @@ import { UserNav } from "@/components/user-nav"
 import { ThemeToggle } from "@/components/theme-toggle"
 import Link from "next/link"
 import { ComingSoonBanner } from '@/components/coming-soon-banner'
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -106,6 +108,8 @@ export default function RootLayout({
               </div>
             </footer>
             <Toaster />
+            <Analytics />
+            <SpeedInsights />
           </ThemeProvider>
         </Providers>
       </body>
