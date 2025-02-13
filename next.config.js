@@ -52,7 +52,10 @@ const nextConfig = {
       'react/jsx-runtime': require.resolve('react/jsx-runtime'),
       'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime'),
       'react': require.resolve('react'),
-      'react-dom': require.resolve('react-dom')
+      'react-dom': require.resolve('react-dom'),
+      'react-dom/client': require.resolve('react-dom/client'),
+      'react-dom/server': require.resolve('react-dom/server'),
+      'react-dom/server.browser': require.resolve('react-dom/server.browser')
     }
 
     // Add fallbacks for node modules
