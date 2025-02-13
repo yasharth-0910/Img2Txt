@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path')
+
 const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true, // Temporarily disable ESLint during build
@@ -46,30 +48,16 @@ const nextConfig = {
     ]
   },
   webpack: (config, { isServer }) => {
-    if (!isServer) {
-      // Client-side specific config
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        'react': require.resolve('react'),
-        'react-dom': require.resolve('react-dom'),
-        'react-dom/client': require.resolve('react-dom/client')
-      }
-    } else {
-      // Server-side specific config
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        'react': require.resolve('react'),
-        'react-dom': require.resolve('react-dom'),
-        'react-dom/server': require.resolve('react-dom/server'),
-        'react-dom/server.browser': require.resolve('react-dom/server.browser')
-      }
-    }
+    // Add node_modules to module resolution paths
+    config.resolve.modules = ['node_modules', ...config.resolve.modules]
 
-    // Common config
+    // Add path aliases
     config.resolve.alias = {
       ...config.resolve.alias,
-      'react/jsx-runtime': require.resolve('react/jsx-runtime'),
-      'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime')
+      'react': path.resolve('./node_modules/react'),
+      'react-dom': path.resolve('./node_modules/react-dom'),
+      'react/jsx-runtime': path.resolve('./node_modules/react/jsx-runtime'),
+      'react/jsx-dev-runtime': path.resolve('./node_modules/react/jsx-dev-runtime'),
     }
 
     // Add fallbacks for node modules
@@ -95,7 +83,8 @@ const nextConfig = {
     '@radix-ui/react-dialog',
     '@radix-ui/react-slot',
     '@vercel/analytics',
-    '@vercel/speed-insights'
+    '@vercel/speed-insights',
+    'next-auth'
   ]
 }
 
