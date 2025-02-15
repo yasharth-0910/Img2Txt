@@ -40,4 +40,6 @@ export default function PaymentStatus() {
       </div>
     </div>
   )
-} 
+}
+
+export const dynamic = 'force-dynamic' 

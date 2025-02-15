@@ -111,4 +111,6 @@ export default function AdminDashboard() {
       </div>
     </div>
   )
-} 
+}
+
+export const dynamic = 'force-dynamic' 

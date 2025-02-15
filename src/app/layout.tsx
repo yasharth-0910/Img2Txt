@@ -1,7 +1,6 @@
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { RootLayout } from "@/components/root-layout"
-import { headers } from 'next/headers'
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -31,9 +30,6 @@ export default function Layout({
 }: {
   children: React.ReactNode
 }) {
-  // Force dynamic rendering
-  headers()
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>

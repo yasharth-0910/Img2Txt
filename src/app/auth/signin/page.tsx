@@ -57,4 +57,6 @@ export default function SignIn() {
       </Card>
     </div>
   )
-} 
+}
+
+export const dynamic = 'force-dynamic' 

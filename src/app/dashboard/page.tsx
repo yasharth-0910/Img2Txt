@@ -135,4 +135,6 @@ export default function DashboardPage() {
       </div>
     </div>
   )
-} 
+}
+
+export const dynamic = 'force-dynamic' 

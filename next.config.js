@@ -9,6 +9,14 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  experimental: {
+    // Enable streaming features
+    serverActions: true,
+  },
+  // Optimize for client-side rendering
+  reactStrictMode: true,
+  swcMinify: true,
+  // Handle cross-origin issues
   async headers() {
     return [
       {
@@ -27,53 +35,17 @@ const nextConfig = {
             value: 'cross-origin',
           }
         ],
-      },
-      {
-        source: '/tesseract/:path*',
-        headers: [
-          {
-            key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin',
-          },
-          {
-            key: 'Cross-Origin-Embedder-Policy',
-            value: 'require-corp',
-          },
-          {
-            key: 'Cross-Origin-Resource-Policy',
-            value: 'cross-origin',
-          },
-          {
-            key: 'Content-Type',
-            value: 'application/javascript',
-          }
-        ],
       }
     ]
   },
   webpack: (config, { isServer }) => {
-    // Add node_modules to module resolution paths
-    config.resolve.modules = ['node_modules', ...config.resolve.modules]
-
-    // Add path aliases
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      'react': path.resolve('./node_modules/react'),
-      'react-dom': path.resolve('./node_modules/react-dom'),
-      'react/jsx-runtime': path.resolve('./node_modules/react/jsx-runtime'),
-      'react/jsx-dev-runtime': path.resolve('./node_modules/react/jsx-dev-runtime'),
-    }
-
-    // Add fallbacks for node modules
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      fs: false,
-      path: false,
-    }
-
-    // Handle server-side packages
-    if (isServer) {
-      config.externals = [...(config.externals || []), 'resend']
+    // Add optimizations
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+      }
     }
 
     return config
