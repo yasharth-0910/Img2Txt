@@ -9,10 +9,6 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  experimental: {
-    // Enable streaming features
-    serverActions: true,
-  },
   // Optimize for client-side rendering
   reactStrictMode: true,
   swcMinify: true,
@@ -46,6 +42,11 @@ const nextConfig = {
         fs: false,
         path: false,
       }
+    }
+
+    // Handle server-side packages
+    if (isServer) {
+      config.externals = [...(config.externals || []), 'resend']
     }
 
     return config

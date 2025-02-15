@@ -51,7 +51,7 @@
     "react-dropzone": "^14.3.5",
     "react-mathjax": "^1.0.1",
     "recharts": "^2.15.1",
-    "resend": "0.16.0",
+    "resend": "^2.0.0",
     "sonner": "^1.7.4",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
