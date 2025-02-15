@@ -2,6 +2,8 @@
 
 import { SessionProvider } from "next-auth/react"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from "sonner"
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -14,7 +16,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
         disableTransitionOnChange
       >
         {children}
-        <Toaster />
+        <Analytics />
+        <SpeedInsights />
+        <Toaster position="bottom-right" />
       </ThemeProvider>
     </SessionProvider>
   )

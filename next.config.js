@@ -62,7 +62,13 @@ const nextConfig = {
     '@vercel/analytics',
     '@vercel/speed-insights',
     'next-auth'
-  ]
+  ],
+  images: {
+    domains: ['avatars.githubusercontent.com', 'lh3.googleusercontent.com'],
+  },
+  experimental: {
+    optimizeCss: true,
+  },
 }
 
 module.exports = nextConfig 

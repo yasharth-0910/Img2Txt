@@ -53,10 +53,13 @@
     "recharts": "^2.15.1",
     "resend": "^2.0.0",
     "sonner": "^1.7.4",
-    "tailwind-merge": "^3.0.1",
+    "tailwind-merge": "^2.2.1",
+    "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
     "tesseract.js": "^4.1.1",
-    "uuid": "^11.0.5"
+    "uuid": "^11.0.5",
+    "postcss": "^8.4.35",
+    "autoprefixer": "^10.4.17"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -67,9 +70,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
-    "postcss": "^8",
     "prisma": "^6.3.1",
-    "tailwindcss": "^3.4.1",
     "tsx": "^4.19.2",
     "typescript": "^5"
   },

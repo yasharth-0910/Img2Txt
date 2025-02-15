@@ -1,6 +1,5 @@
 import { Inter } from "next/font/google"
 import "./globals.css"
-import { RootLayout } from "@/components/root-layout"
 import { Providers } from "@/components/providers"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -26,7 +25,7 @@ const jsonLd = {
   ]
 }
 
-export default function Layout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
@@ -40,11 +39,7 @@ export default function Layout({
         />
       </head>
       <body className={inter.className}>
-        <Providers>
-          <RootLayout className={inter.className}>
-            {children}
-          </RootLayout>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )
