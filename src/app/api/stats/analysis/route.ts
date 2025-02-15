@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma"
 import { authOptions } from "@/lib/auth"
 import { handleApiError } from "@/middleware/error"
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions)
@@ -37,6 +39,6 @@ export async function GET() {
 
     return NextResponse.json(stats)
   } catch (error) {
-    return handleApiError(error)
+    return NextResponse.json({ error: 'Failed to fetch analysis' }, { status: 500 })
   }
 } 

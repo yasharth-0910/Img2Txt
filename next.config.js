@@ -69,6 +69,30 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
   },
+  // Add static page configuration
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: '/api/:path*',
+      },
+    ]
+  },
+  // Handle static error pages
+  async redirects() {
+    return [
+      {
+        source: '/404',
+        destination: '/_error',
+        permanent: true,
+      },
+      {
+        source: '/500',
+        destination: '/_error',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig 
